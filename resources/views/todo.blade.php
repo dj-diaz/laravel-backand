@@ -9,6 +9,10 @@
                 <span class="glyphicon glyphicon-plus"></span> Add
             </button>
             <hr>
+
+            @if(Session::has('message'))
+                <div class="alert alert-success"> {{ Session::get('message') }}</div>
+            @endif
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
@@ -20,19 +24,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    
                         @foreach ($todos as $todo)
+                        <tr>
                             <td>{{ $todo->id }}</td>
                             <td>{{ $todo->title }}</td>
                             <td>{{ $todo->description }}</td>
-                            <td><button type="button" class="btn btn-success" aria-label="Left Align">
-                              <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Edit
-                            </button></td>
-                            <td><button type="button" class="btn btn-danger" aria-label="Left Align">
-                              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete
-                            </button></td>
+                            <td>
+                                <a href="{{ action('TodoController@edit', ['id' => $todo->id ] )}}" type="button" class="btn btn-success" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Edit
+                                </a>
+                            </td>
+                            <td>
+                                <form action="{{ action('TodoController@delete', ['id' => $todo->id]) }}" method="post">
+
+                                {{ csrf_field() }}
+                                {{ method_field('DELETE') }}
+
+                                <button type="submit" class="btn btn-danger" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete
+                                </button>
+
+                                </form>
+                            </td>
+                         </tr>
                         @endforeach
-                    </tr>
+                   
                 </tbody>
             </table>
                 
@@ -45,10 +62,20 @@
             <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Modal title</h4>
+                <h4 class="modal-title">Add Todo</h4>
             </div>
             <div class="modal-body">
-                <p>One fine body&hellip;</p>
+                <form action="{{ action('TodoController@store') }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                    <label for="title">Title: </label>
+                    <input type="text" name="title" class="form-control">
+
+                    <label for="description">Description: </label>
+                    <input type="text" name="description" class="form-control">
+                    
+                    <input type="submit" value="Submit" class="btn btn-lg btn-success">
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

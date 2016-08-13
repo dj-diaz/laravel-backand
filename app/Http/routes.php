@@ -12,3 +12,12 @@
 */
 
 Route::get('/', 'TodoController@index');
+
+
+Route::post('/', 'TodoController@store');
+
+Route::delete('/{id}', 'TodoController@delete');
+
+
+Route::get('/{id}', 'TodoController@edit');
+Route::put('/{id}', 'TodoController@put');
